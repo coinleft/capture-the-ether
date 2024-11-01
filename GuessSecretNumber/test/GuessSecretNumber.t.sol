@@ -20,6 +20,7 @@ contract GuessSecretNumberTest is Test {
     function testFindSecretNumber() public {
         // Put solution here
         uint8 secretNumber = exploitContract.Exploiter();
+        console.log(secretNumber);
         _checkSolved(secretNumber);
     }
 

